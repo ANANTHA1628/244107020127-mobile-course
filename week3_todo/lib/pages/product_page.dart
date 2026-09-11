@@ -27,7 +27,6 @@ final productsProvider =
   ProductsNotifier.new,
 );
 
-// 3. UI ConsumerWidget
 class ProductPage extends ConsumerWidget {
   const ProductPage({super.key});
 

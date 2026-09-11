@@ -1,38 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/todo_provider.dart';
+import '../widgets/todo_tile.dart';
 
 class TodoPage extends ConsumerWidget {
   const TodoPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final todos = ref.watch(todoListProvider);
+    final todos = ref.watch(filteredTodoListProvider);
+    final activeFilter = ref.watch(todoFilterProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('ToDo Riverpod')),
+      appBar: AppBar(
+        title: const Text('ToDo Riverpod'),
+        actions: [
+          
+          PopupMenuButton<TodoFilter>(
+            icon: const Icon(Icons.filter_list),
+            initialValue: activeFilter,
+            onSelected: (filter) {
+            ref.read(todoFilterProvider.notifier).setFilter(filter);
+                },
+            itemBuilder: (context) => const [
+              PopupMenuItem(
+                value: TodoFilter.all,
+                child: Text('Semua'),
+              ),
+              PopupMenuItem(
+                value: TodoFilter.uncompleted,
+                child: Text('Belum Selesai'),
+              ),
+              PopupMenuItem(
+                value: TodoFilter.completed,
+                child: Text('Selesai'),
+              ),
+            ],
+          ),
+        ],
+      ),
       body: todos.isEmpty
           ? const Center(child: Text('Belum ada tugas'))
           : ListView.builder(
               itemCount: todos.length,
-              itemBuilder: (context, index) => ListTile(
-                leading: Checkbox(
-                  value: todos[index].done,
-                  onChanged: (_) =>
-                      ref.read(todoListProvider.notifier).toggle(index),
-                ),
-                title: Text(
-                  todos[index].title,
-                  style: TextStyle(
-                      decoration: todos[index].done
-                          ? TextDecoration.lineThrough
-                          : null),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () =>
-                      ref.read(todoListProvider.notifier).remove(index),
-                ),
+              itemBuilder: (context, index) => TodoTile(
+                todo: todos[index],
+                index: index,
               ),
             ),
       floatingActionButton: FloatingActionButton(

@@ -1,17 +1,17 @@
-# week3_todo
+Hasil Pengamatan 3 State
 
-A new Flutter project.
+Loading (AsyncLoading): Muncul indikator putar 2 detik pertama saat build() sedang menunggu proses Future.
 
-## Getting Started
+Error (AsyncError): Muncul pesan gagal dan tombol Coba lagi karena throw Exception otomatis ditangkap Riverpod.
 
-This project is a starting point for a Flutter application.
+Success (AsyncData): Muncul daftar produk (ListView) setelah data berhasil di-return.
 
-A few resources to get you started if this is your first Flutter project:
+Fungsi Tombol "Coba Lagi" (ref.invalidate)
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Mereset state provider dan memicu eksekusi ulang method build() dari awal untuk mencoba ambil data lagi tanpa restart aplikasi.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Jawaban Refleksi (Stale Data)
+
+Alasan: Mencegah UI berkedip (layout jitter) dan menjaga alur baca pengguna tetap nyaman daripada melihat layar kosong putih.
+
+Kapan Penting: Fitur pull-to-refresh, feed medsos/katalog, pencarian/filter cepat, dan kondisi sinyal tidak stabil (arsitektur offline-first).

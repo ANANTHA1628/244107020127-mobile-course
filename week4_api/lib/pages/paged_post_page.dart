@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../data/paged_posts.dart';
+import '../widgets/post_tile.dart';
 
 class PagedPostPage extends ConsumerWidget {
   const PagedPostPage({super.key});
@@ -51,12 +53,9 @@ class PagedPostPage extends ConsumerWidget {
             }
 
             final post = state.items[index];
-            return ListTile(
-              leading: CircleAvatar(child: Text(post.id.toString())),
-              title: Text(post.title,
-                  maxLines: 1, overflow: TextOverflow.ellipsis),
-              subtitle: Text(post.body,
-                  maxLines: 2, overflow: TextOverflow.ellipsis),
+            return PostTile(
+              post: post,
+              onTap: () => context.push('/post/${post.id}'),
             );
           },
         ),

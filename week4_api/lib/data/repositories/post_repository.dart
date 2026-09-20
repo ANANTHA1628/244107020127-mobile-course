@@ -27,4 +27,8 @@ class PostRepository {
       .map(Post.fromJson)
       .toList();
 }
+Future<Post> fetchPostById(int id) async {
+    final response = await _dio.get('/posts/$id');
+    return Post.fromJson(Map<String, dynamic>.from(response.data as Map));
+  }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../data/local/note.dart';
 import '../data/repositories/notes_repositories.dart';
+import '../widgets/note_tile.dart';
 import 'settings_page.dart';
 
 class NotesPage extends ConsumerStatefulWidget {
@@ -61,13 +63,18 @@ class _NotesPageState extends ConsumerState<NotesPage> {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (titleController.text.trim().isNotEmpty) {
+              final title = titleController.text.trim();
+              final body = bodyController.text.trim();
+
+              if (title.isNotEmpty) {
+                Navigator.pop(ctx);
+
                 await _repo.addNote(
-                  title: titleController.text.trim(),
-                  body: bodyController.text.trim(),
+                  title: title,
+                  body: body,
                 );
+
                 if (mounted) {
-                  Navigator.pop(ctx);
                   _refreshData();
                 }
               }
@@ -80,10 +87,11 @@ class _NotesPageState extends ConsumerState<NotesPage> {
   }
 
   Future<void> _handleSync() async {
-    // 1. Cek mode force-offline
+    final messenger = ScaffoldMessenger.of(context);
+
     final isOffline = ref.read(forceOfflineProvider);
     if (isOffline) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         const SnackBar(
           content: Text('Gagal sinkronisasi: Mode force-offline aktif!'),
           backgroundColor: Colors.red,
@@ -92,21 +100,18 @@ class _NotesPageState extends ConsumerState<NotesPage> {
       return;
     }
 
-    // 2. Jalankan sync jika online
     setState(() => _isLoading = true);
     final synced = await _repo.syncNotes();
     setState(() => _isLoading = false);
 
     await _refreshData();
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Berhasil menyinkronkan $synced catatan!'),
-          backgroundColor: Colors.green,
-        ),
-      );
-    }
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('Berhasil menyinkronkan $synced catatan!'),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   @override
@@ -115,7 +120,6 @@ class _NotesPageState extends ConsumerState<NotesPage> {
       appBar: AppBar(
         title: const Text('Offline Notes'),
         actions: [
-          // Badge indikator dirty
           Center(
             child: Container(
               margin: const EdgeInsets.only(right: 8),
@@ -150,20 +154,13 @@ class _NotesPageState extends ConsumerState<NotesPage> {
                   itemCount: _notes.length,
                   itemBuilder: (context, index) {
                     final note = _notes[index];
-                    return ListTile(
-                      title: Text(note.title),
-                      subtitle: Text(
-                        '${note.body.isNotEmpty ? "${note.body}\n" : ""}${note.updatedAt.toLocal()}',
-                      ),
-                      trailing: note.dirty
-                          ? const Tooltip(
-                              message: 'Belum tersinkron (Dirty)',
-                              child: Icon(Icons.cloud_off, color: Colors.orange),
-                            )
-                          : const Tooltip(
-                              message: 'Tersinkron',
-                              child: Icon(Icons.cloud_done, color: Colors.green),
-                            ),
+                    return NoteTile(
+                      note: note,
+                      onTap: () {
+                        if (note.id != null) {
+                          context.push('/note/${note.id}');
+                        }
+                      },
                     );
                   },
                 ),

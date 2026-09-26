@@ -22,7 +22,6 @@ class DarkModeNotifier extends AsyncNotifier<bool> {
   }
 }
 
-// Provider untuk Force Offline
 final forceOfflineProvider =
     NotifierProvider<ForceOfflineNotifier, bool>(ForceOfflineNotifier.new);
 
@@ -35,7 +34,6 @@ class ForceOfflineNotifier extends Notifier<bool> {
   }
 }
 
-// Widget UI SettingsPage
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 

@@ -1,11 +1,15 @@
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
 String? pendingDeepLink;
 
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+ 
+}
 
 void registerBackgroundHandler() {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -20,6 +24,14 @@ Future<bool> requestNotificationPermission() async {
     carPlay: false,
     criticalAlert: false,
   );
+
+  if (Platform.isAndroid) {
+    await _local
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+  }
+
   return settings.authorizationStatus == AuthorizationStatus.authorized ||
       settings.authorizationStatus == AuthorizationStatus.provisional;
 }
@@ -51,7 +63,6 @@ Future<void> initLocalNotifications(void Function(String route) go) async {
       ?.createNotificationChannel(channel);
 }
 
-// Fungsi lifecycle token untuk Praktikum 2
 Future<void> initFcmToken({
   required Future<void> Function(String token) onToken,
 }) async {
@@ -64,12 +75,12 @@ Future<void> initFcmToken({
   await FirebaseMessaging.instance.subscribeToTopic('pengumuman-kampus');
 }
 
-// Fungsi masking token agar aman saat difoto/screenshot laporan
 String maskToken(String? token) {
   if (token == null || token.isEmpty) return 'Menunggu token...';
   if (token.length <= 12) return '$token...';
   return '${token.substring(0, 12)}...';
 }
+
 
 void listenForeground(void Function(String route) go) {
   FirebaseMessaging.onMessage.listen((message) async {

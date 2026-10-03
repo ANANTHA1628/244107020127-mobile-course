@@ -1,14 +1,17 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../routes.dart';
 
 final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
 String? pendingDeepLink;
 
+const String _channelId = 'pengumuman';
+const String _channelName = 'Pengumuman Kampus';
+
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
- 
+  
 }
 
 void registerBackgroundHandler() {
@@ -51,8 +54,8 @@ Future<void> initLocalNotifications(void Function(String route) go) async {
   );
 
   const channel = AndroidNotificationChannel(
-    'pengumuman',
-    'Pengumuman Kampus',
+    _channelId,
+    _channelName,
     description: 'Channel untuk notifikasi pengumuman kampus',
     importance: Importance.high,
   );
@@ -81,13 +84,14 @@ String maskToken(String? token) {
   return '${token.substring(0, 12)}...';
 }
 
-
 void listenForeground(void Function(String route) go) {
   FirebaseMessaging.onMessage.listen((message) async {
-    final route = message.data['route'] ?? '/';
+    final route = routeFromMessage(message.data);
+
     const androidDetails = AndroidNotificationDetails(
-      'pengumuman',
-      'Pengumuman Kampus',
+      _channelId,
+      _channelName,
+      channelDescription: 'Channel untuk notifikasi pengumuman kampus',
       importance: Importance.high,
       priority: Priority.high,
     );
@@ -102,21 +106,17 @@ void listenForeground(void Function(String route) go) {
   });
 
   FirebaseMessaging.onMessageOpenedApp.listen((message) {
-    final route = message.data['route'];
-    if (route != null && route.isNotEmpty) {
-      go(route);
-    }
+    final route = routeFromMessage(message.data);
+    go(route);
   });
 }
 
 Future<void> handleTerminated(void Function(String route) go) async {
   final initial = await FirebaseMessaging.instance.getInitialMessage();
   if (initial != null) {
-    final route = initial.data['route'];
-    if (route != null && route.isNotEmpty) {
-      go(route);
-      return;
-    }
+    final route = routeFromMessage(initial.data);
+    go(route);
+    return;
   }
 
   if (pendingDeepLink != null) {

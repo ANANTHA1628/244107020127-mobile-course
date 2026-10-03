@@ -9,6 +9,7 @@ import 'pages/debug_token_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'providers/auth_provider.dart';
+import 'routes.dart'; 
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -23,27 +24,28 @@ final routerProvider = Provider<GoRouter>((ref) {
     refreshListenable: authNotifier,
     redirect: (context, state) {
       final loggedIn = ref.read(authStateProvider).value ?? false;
-      final goingLogin = state.matchedLocation == '/login';
+      final goingLogin = state.matchedLocation == AppRoutes.login;
 
-      if (!loggedIn && !goingLogin) return '/login';
-      if (loggedIn && goingLogin) return '/';
+      if (!loggedIn && !goingLogin) return AppRoutes.login;
+      if (loggedIn && goingLogin) return AppRoutes.root;
       return null;
     },
+
     routes: [
       GoRoute(
-        path: '/login',
+        path: AppRoutes.login,
         builder: (context, state) => const LoginPage(),
       ),
       GoRoute(
-        path: '/',
+        path: AppRoutes.root,
         builder: (context, state) => const HomePage(),
       ),
       GoRoute(
-        path: '/debug',
+        path: AppRoutes.debug,
         builder: (context, state) => const DebugTokenPage(),
       ),
       GoRoute(
-        path: '/pengumuman/:id',
+        path: AppRoutes.announcement,
         builder: (context, state) =>
             AnnouncementPage(id: state.pathParameters['id'] ?? ''),
       ),
@@ -55,7 +57,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  // Wajib didaftarkan sedini mungkin
   registerBackgroundHandler();
 
   runApp(const ProviderScope(child: CampusNotifyApp()));
@@ -72,7 +73,10 @@ class _CampusNotifyAppState extends ConsumerState<CampusNotifyApp> {
   @override
   void initState() {
     super.initState();
-    _setupPushNotifications();
+    // 3. Jalankan setup setelah frame pertama selesai agar router siap menerima navigasi
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _setupPushNotifications();
+    });
   }
 
   Future<void> _setupPushNotifications() async {
@@ -85,7 +89,7 @@ class _CampusNotifyAppState extends ConsumerState<CampusNotifyApp> {
 
     await initLocalNotifications(navigateTo);
     listenForeground(navigateTo);
-    await handleTerminated(navigateTo);
+    await handleTerminated(navigateTo); 
     await subscribeCampusTopic();
   }
 

@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'messaging/push_service.dart';
 import 'pages/announcement_page.dart';
 import 'pages/debug_token_page.dart';
 import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'providers/auth_provider.dart';
+
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authNotifier = ValueNotifier<bool>(false);
@@ -16,6 +19,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   });
 
   return GoRouter(
+    navigatorKey: rootNavigatorKey,
     refreshListenable: authNotifier,
     redirect: (context, state) {
       final loggedIn = ref.read(authStateProvider).value ?? false;
@@ -50,14 +54,43 @@ final routerProvider = Provider<GoRouter>((ref) {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  // Wajib didaftarkan sedini mungkin
+  registerBackgroundHandler();
+
   runApp(const ProviderScope(child: CampusNotifyApp()));
 }
 
-class CampusNotifyApp extends ConsumerWidget {
+class CampusNotifyApp extends ConsumerStatefulWidget {
   const CampusNotifyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<CampusNotifyApp> createState() => _CampusNotifyAppState();
+}
+
+class _CampusNotifyAppState extends ConsumerState<CampusNotifyApp> {
+  @override
+  void initState() {
+    super.initState();
+    _setupPushNotifications();
+  }
+
+  Future<void> _setupPushNotifications() async {
+    await requestNotificationPermission();
+
+    void navigateTo(String route) {
+      final router = ref.read(routerProvider);
+      router.push(route);
+    }
+
+    await initLocalNotifications(navigateTo);
+    listenForeground(navigateTo);
+    await handleTerminated(navigateTo);
+    await subscribeCampusTopic();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(

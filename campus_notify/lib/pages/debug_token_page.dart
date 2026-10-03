@@ -15,12 +15,11 @@ class _DebugTokenPageState extends State<DebugTokenPage> {
   @override
   void initState() {
     super.initState();
-    _startFcm();
+    _fetchFcmToken();
   }
 
-  Future<void> _startFcm() async {
+  Future<void> _fetchFcmToken() async {
     await requestNotificationPermission();
-    await initLocalNotifications();
     await initFcmToken(
       onToken: (token) async {
         if (!mounted) return;
@@ -28,10 +27,7 @@ class _DebugTokenPageState extends State<DebugTokenPage> {
           _currentToken = token;
           _isLoading = false;
         });
-
-        // Contoh pengiriman ke backend (sesuai instruksi praktikum):
-        // await dio.post('/devices', data: {'fcm_token': token, 'platform': 'android'});
-        debugPrint('Token Terdaftar: ${maskToken(token)}');
+        debugPrint('Token diperbarui: ${maskToken(token)}');
       },
     );
   }
@@ -56,12 +52,15 @@ class _DebugTokenPageState extends State<DebugTokenPage> {
               _isLoading
                   ? const CircularProgressIndicator()
                   : Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Text(
+                      child: SelectableText(
                         maskToken(_currentToken),
                         style: const TextStyle(
                           fontSize: 16,

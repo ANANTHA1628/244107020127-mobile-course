@@ -1,17 +1,4 @@
-# campus_notify
+StateYang DiharapkanCara UjiHasil PengamatanForegroundBanner lokal (heads-up) muncul saat aplikasi terbuka. Saat diklik, router membuka rute /pengumuman/3.Buka aplikasi di layar utama, biarkan aktif, kirim pesan dari Firebase Console. Klik banner yang muncul.Berhasil. Local notification memicu go('/pengumuman/3').BackgroundBanner sistem Android muncul di tray status bar. Saat diklik, aplikasi kembali aktif dan membuka /pengumuman/3.Buka aplikasi, tekan tombol Home (minimize), kirim notifikasi dari Console, klik notifikasi di tray.Berhasil. FirebaseMessaging.onMessageOpenedApp menerima data rute.TerminatedAplikasi terbuka dari awal dan langsung diarahkan ke /pengumuman/3 tanpa tertahan di layar awal.Tutup paksa aplikasi (swipe-close di Recent Apps), kirim pesan, klik notifikasi.Berhasil. getInitialMessage() menangkap payload saat aplikasi dibuka.
 
-A new Flutter project.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.

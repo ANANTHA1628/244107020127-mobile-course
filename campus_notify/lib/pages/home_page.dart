@@ -22,7 +22,10 @@ class HomePage extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Status: Berhasil Login', style: TextStyle(fontSize: 18)),
+            const Text(
+              'Status: Berhasil Login',
+              style: TextStyle(fontSize: 18),
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => context.push('/pengumuman/101'),
@@ -32,6 +35,11 @@ class HomePage extends ConsumerWidget {
             ElevatedButton(
               onPressed: () => context.push('/debug'),
               child: const Text('Buka Halaman Debug FCM'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton(
+              onPressed: () => context.push('/notes'),
+              child: const Text('Buka Catatan (Notes)'),
             ),
           ],
         ),

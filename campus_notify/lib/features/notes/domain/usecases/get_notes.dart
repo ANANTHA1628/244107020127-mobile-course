@@ -3,10 +3,11 @@ import '../entities/note.dart';
 import '../repositories/note_repository.dart';
 
 class GetNotes {
-  const GetNotes(this._repository);
-  final NoteRepository _repository;
+  final NoteRepository repository;
 
-  Future<({List<Note> notes, Failure? failure})> call() {
-    return _repository.fetchNotes();
+  const GetNotes(this.repository);
+
+  Future<({List<Note> notes, Failure? failure})> call() async {
+    return await repository.fetchNotes();
   }
 }

@@ -5,10 +5,9 @@ import '../../domain/repositories/note_repository.dart';
 import '../models/note_model.dart';
 
 class NoteRepositoryImpl implements NoteRepository {
-  NoteRepositoryImpl({required Future<Database> Function() openDb})
-      : _openDb = openDb;
-
   final Future<Database> Function() _openDb;
+
+ NoteRepositoryImpl({required this._openDb});
 
   @override
   Future<({List<Note> notes, Failure? failure})> fetchNotes() async {
@@ -38,17 +37,27 @@ class NoteRepositoryImpl implements NoteRepository {
       final id = await db.insert(
         'notes',
         NoteModel(
-            title: title, body: body, updatedAt: now, dirty: true)
-            .toMap(),
+          title: title,
+          body: body,
+          updatedAt: now,
+          dirty: true,
+        ).toMap(),
       );
       return (
-        note: Note(id: id, title: title, body: body,
-            updatedAt: now, dirty: true),
+        note: Note(
+          id: id,
+          title: title,
+          body: body,
+          updatedAt: now,
+          dirty: true,
+        ),
         failure: null,
       );
     } catch (e) {
-      return (note: null,
-          failure: LocalFailure('Gagal menyimpan catatan: $e'));
+      return (
+        note: null,
+        failure: LocalFailure('Gagal menyimpan catatan: $e'),
+      );
     }
   }
 }

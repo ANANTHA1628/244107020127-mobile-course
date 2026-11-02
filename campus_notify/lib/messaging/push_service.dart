@@ -1,18 +1,19 @@
 import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import '../routes.dart';
 
-final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin _local =
+    FlutterLocalNotificationsPlugin();
 String? pendingDeepLink;
 
 const String _channelId = 'pengumuman';
 const String _channelName = 'Pengumuman Kampus';
 
 @pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  
-}
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {}
 
 void registerBackgroundHandler() {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -31,7 +32,8 @@ Future<bool> requestNotificationPermission() async {
   if (Platform.isAndroid) {
     await _local
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
   }
 
@@ -62,7 +64,8 @@ Future<void> initLocalNotifications(void Function(String route) go) async {
 
   await _local
       .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+        AndroidFlutterLocalNotificationsPlugin
+      >()
       ?.createNotificationChannel(channel);
 }
 

@@ -1,10 +1,10 @@
-
-
 class AppRoutes {
   static const String root = '/';
   static const String login = '/login';
   static const String debug = '/debug';
   static const String announcement = '/pengumuman/:id';
+  static const String chat = '/chat';
+  static const String notes = '/notes';
 
   static String announcementDetail(String id) => '/pengumuman/$id';
 }

@@ -32,9 +32,7 @@ class _NotesPageState extends ConsumerState<NotesPage> {
     final currentQuery = ref.watch(noteSearchQueryProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Catatan Kampus'),
-      ),
+      appBar: AppBar(title: const Text('Catatan Kampus')),
       body: Column(
         children: [
           Padding(
@@ -125,11 +123,7 @@ class ErrorView extends StatelessWidget {
   final String message;
   final VoidCallback onRetry;
 
-  const ErrorView({
-    super.key,
-    required this.message,
-    required this.onRetry,
-  });
+  const ErrorView({super.key, required this.message, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
@@ -141,10 +135,7 @@ class ErrorView extends StatelessWidget {
           children: [
             Text('Terjadi kesalahan: $message', textAlign: TextAlign.center),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: onRetry,
-              child: const Text('Coba Lagi'),
-            ),
+            ElevatedButton(onPressed: onRetry, child: const Text('Coba Lagi')),
           ],
         ),
       ),
@@ -165,9 +156,7 @@ class NotesList extends StatelessWidget {
       itemBuilder: (context, index) {
         final note = notes[index];
         return ListTile(
-          leading: const CircleAvatar(
-            child: Icon(Icons.note),
-          ),
+          leading: const CircleAvatar(child: Icon(Icons.note)),
           title: Text(note.title),
           subtitle: Text(
             note.body.isNotEmpty ? note.body : '(Tanpa isi)',

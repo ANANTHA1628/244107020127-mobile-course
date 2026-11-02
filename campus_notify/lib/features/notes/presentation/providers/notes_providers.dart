@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../data/repositories/note_repository_impl.dart';
 import '../../domain/repositories/note_repository.dart';
 import '../../domain/usecases/get_notes.dart';
@@ -35,8 +36,9 @@ class NoteSearchNotifier extends Notifier<String> {
   }
 }
 
-final noteSearchQueryProvider =
-    NotifierProvider<NoteSearchNotifier, String>(NoteSearchNotifier.new);
+final noteSearchQueryProvider = NotifierProvider<NoteSearchNotifier, String>(
+  NoteSearchNotifier.new,
+);
 
 // Presentation layer: state untuk UI daftar catatan mentah
 final notesProvider = FutureProvider<List<Note>>((ref) async {

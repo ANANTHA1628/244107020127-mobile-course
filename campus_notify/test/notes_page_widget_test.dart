@@ -6,16 +6,15 @@ import 'package:campus_notify/features/notes/presentation/providers/notes_provid
 import 'package:campus_notify/features/notes/domain/entities/note.dart';
 
 void main() {
-  testWidgets('menampilkan EmptyNotesView saat daftar catatan kosong',
-      (tester) async {
+  testWidgets('menampilkan EmptyNotesView saat daftar catatan kosong', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           notesProvider.overrideWith((ref) => Future.value(<Note>[])),
         ],
-        child: const MaterialApp(
-          home: NotesPage(),
-        ),
+        child: const MaterialApp(home: NotesPage()),
       ),
     );
 
@@ -26,40 +25,41 @@ void main() {
   });
 
   testWidgets(
-      'menampilkan pesan tidak ada hasil saat query pencarian tidak cocok',
-      (tester) async {
-    final sampleNotes = [
-      Note(
-        id: 1,
-        title: 'Tugas Kuliah',
-        body: 'Kerjakan laporan minggu 9',
-        updatedAt: DateTime(2026, 10, 1),
-      ),
-    ];
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          notesProvider.overrideWith((ref) => Future.value(sampleNotes)),
-        ],
-        child: const MaterialApp(
-          home: NotesPage(),
+    'menampilkan pesan tidak ada hasil saat query pencarian tidak cocok',
+    (tester) async {
+      final sampleNotes = [
+        Note(
+          id: 1,
+          title: 'Tugas Kuliah',
+          body: 'Kerjakan laporan minggu 9',
+          updatedAt: DateTime(2026, 10, 1),
         ),
-      ),
-    );
+      ];
 
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            notesProvider.overrideWith((ref) => Future.value(sampleNotes)),
+          ],
+          child: const MaterialApp(home: NotesPage()),
+        ),
+      );
 
-    // Catatan awal muncul
-    expect(find.text('Tugas Kuliah'), findsOneWidget);
+      await tester.pumpAndSettle();
 
-    // Ketik pencarian yang tidak ada di daftar
-    await tester.enterText(find.byType(TextField), 'zzzzzz');
-    await tester.pumpAndSettle();
+      // Catatan awal muncul
+      expect(find.text('Tugas Kuliah'), findsOneWidget);
 
-    // Empty state pencarian muncul
-    expect(find.text('Tidak ada catatan yang cocok dengan "zzzzzz".'),
-        findsOneWidget);
-    expect(find.byIcon(Icons.search_off), findsOneWidget);
-  });
+      // Ketik pencarian yang tidak ada di daftar
+      await tester.enterText(find.byType(TextField), 'zzzzzz');
+      await tester.pumpAndSettle();
+
+      // Empty state pencarian muncul
+      expect(
+        find.text('Tidak ada catatan yang cocok dengan "zzzzzz".'),
+        findsOneWidget,
+      );
+      expect(find.byIcon(Icons.search_off), findsOneWidget);
+    },
+  );
 }

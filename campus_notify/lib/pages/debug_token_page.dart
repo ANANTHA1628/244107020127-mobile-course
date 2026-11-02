@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../messaging/push_service.dart';
 
 class DebugTokenPage extends StatefulWidget {

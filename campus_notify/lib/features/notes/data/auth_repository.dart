@@ -5,9 +5,10 @@ class AuthSession {
 }
 
 class AuthRepository {
-
-  Future<AuthSession> login(
-      {required String email, required String password}) async {
+  Future<AuthSession> login({
+    required String email,
+    required String password,
+  }) async {
     await Future.delayed(const Duration(milliseconds: 500));
     if (!email.contains('@') || password.length < 6) {
       throw Exception('Email atau kata sandi tidak valid');

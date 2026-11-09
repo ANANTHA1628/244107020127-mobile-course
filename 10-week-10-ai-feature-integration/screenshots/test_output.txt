@@ -1,0 +1,24 @@
+00:00 +0: loading test/ai_service_test.dart
+00:00 +1: AiService - Privacy Guard Tests Throws PrivacyException when NIK (16 digit) is entered
+00:00 +2: AiService - Privacy Guard Tests Throws PrivacyException when Indonesian phone number is entered
+00:00 +3: AiService - Privacy Guard Tests Passes valid public inquiry without sensitive data
+00:00 +4: AiService - Offline Fallback Tests Returns Siakad info when prompt contains jadwal/kuliah
+00:00 +5: AiService - Offline Fallback Tests Returns notes guide when prompt contains notes/catatan
+00:00 +6: AiService - Offline Fallback Tests Returns default offline message for general query
+00:00 +7: AiService - API & Cache Tests Throws exception if query is empty
+00:00 +8: AiService - API & Cache Tests Successfully parses Gemini API response
+00:00 +9: AiService - API & Cache Tests Uses local cache on duplicate question without extra HTTP calls
+00:00 +10: AiService - API & Cache Tests Throws exception on HTTP error code (e.g. 500)
+00:00 +11: AiService - API & Cache Tests Streams response chunk by chunk
+00:00 +12: FCM Payload & Route Parsing Tests routeFromMessage menangani route kosong dan tanpa slash
+00:00 +13: FCM Payload & Route Parsing Tests data payload membawa id pengumuman dengan benar
+00:00 +14: Token Store & Auth Lifecycle Tests provider auth membaca status login dari ketersediaan access token
+00:00 +15: Token Store & Auth Lifecycle Tests refresh gagal saat refresh token kosong (paksa sesi berakhir)
+00:00 +16: API Error Formatter Tests 401 response menghasilkan pesan sesi berakhir
+00:00 +17: API Error Formatter Tests connection timeout menghasilkan pesan periksa jaringan
+00:00 +18: ChatScreen Widget Test: Menampilkan empty state dan saran prompt pada tampilan awal
+00:01 +29: NotesPage Widget Test: menampilkan EmptyNotesView saat daftar catatan kosong
+00:01 +30: ChatScreen Widget Test: Menampilkan peringatan privasi saat input terdeteksi NIK
+00:01 +31: NotesPage Widget Test: menampilkan pesan tidak ada hasil saat query pencarian tidak cocok
+00:02 +32: ChatScreen Widget Test: Menampilkan dialog fallback ketika pemanggilan AI API gagal
+00:02 +33: All tests passed!

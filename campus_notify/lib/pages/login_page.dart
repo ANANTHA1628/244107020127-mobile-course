@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../providers/auth_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -61,7 +62,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       height: 48,
                       child: ElevatedButton(
                         onPressed: () {
-                          ref.read(authStateProvider.notifier).login(
+                          ref
+                              .read(authStateProvider.notifier)
+                              .login(
                                 _emailCtrl.text.trim(),
                                 _passCtrl.text.trim(),
                               );
@@ -75,7 +78,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   '${authState.error}',
                   style: const TextStyle(color: Colors.red),
                 ),
-              ]
+              ],
             ],
           ),
         ),

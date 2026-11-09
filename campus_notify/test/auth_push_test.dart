@@ -24,19 +24,25 @@ void main() {
   });
 
   group('Token Store & Auth Lifecycle Tests', () {
-    test('provider auth membaca status login dari ketersediaan access token', () async {
-      final store = FakeTokenStore()..access = 'mock-access';
-      expect(store.access != null, isTrue);
+    test(
+      'provider auth membaca status login dari ketersediaan access token',
+      () async {
+        final store = FakeTokenStore()..access = 'mock-access';
+        expect(store.access != null, isTrue);
 
-      store.access = null;
-      expect(store.access != null, isFalse);
-    });
+        store.access = null;
+        expect(store.access != null, isFalse);
+      },
+    );
 
-    test('refresh gagal saat refresh token kosong (paksa sesi berakhir)', () async {
-      final store = FakeTokenStore()..refresh = '';
-      final needsLogin = (store.refresh ?? '').isEmpty;
-      expect(needsLogin, isTrue);
-    });
+    test(
+      'refresh gagal saat refresh token kosong (paksa sesi berakhir)',
+      () async {
+        final store = FakeTokenStore()..refresh = '';
+        final needsLogin = (store.refresh ?? '').isEmpty;
+        expect(needsLogin, isTrue);
+      },
+    );
   });
 
   group('API Error Formatter Tests', () {

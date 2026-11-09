@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'routes.dart';
 import 'messaging/push_service.dart';
 import 'pages/announcement_page.dart';
@@ -10,6 +11,7 @@ import 'pages/home_page.dart';
 import 'pages/login_page.dart';
 import 'providers/auth_provider.dart';
 import 'features/notes/presentation/pages/notes_page.dart';
+import 'features/chat_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -49,10 +51,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) =>
             AnnouncementPage(id: state.pathParameters['id'] ?? ''),
       ),
+      GoRoute(path: '/notes', builder: (context, state) => const NotesPage()),
       GoRoute(
-  path: '/notes',
-  builder: (context, state) => const NotesPage(),
-),
+        path: AppRoutes.chat,
+        builder: (context, state) => const ChatScreen(),
+      ),
     ],
   );
 });
@@ -93,7 +96,7 @@ class _CampusNotifyAppState extends ConsumerState<CampusNotifyApp> {
 
     await initLocalNotifications(navigateTo);
     listenForeground(navigateTo);
-    await handleTerminated(navigateTo); 
+    await handleTerminated(navigateTo);
     await subscribeCampusTopic();
   }
 

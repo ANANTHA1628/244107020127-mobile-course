@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [ develop, main ]
+  push:
+    branches: [ develop, main ]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.27.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies (campus_notify)
+        run: |
+          cd campus_notify
+          flutter pub get
+
+      - name: Static Code Analysis
+        run: |
+          cd campus_notify
+          flutter analyze
+
+      - name: Run Automated Tests
+        run: |
+          cd campus_notify
+          flutter test

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/network/api_client.dart';
 import '../../domain/entities/announcement.dart';
 import '../../domain/repositories/announcement_repository.dart';
@@ -13,7 +14,9 @@ final getAnnouncementsUseCaseProvider = Provider<GetAnnouncements>((ref) {
   return GetAnnouncements(ref.watch(announcementRepositoryProvider));
 });
 
-final announcementsProvider = FutureProvider.autoDispose<List<Announcement>>((ref) async {
+final announcementsProvider = FutureProvider.autoDispose<List<Announcement>>((
+  ref,
+) async {
   final getAnnouncements = ref.watch(getAnnouncementsUseCaseProvider);
   final result = await getAnnouncements();
   if (result.failure != null) {

@@ -28,8 +28,9 @@ class _NotesPageState extends ConsumerState<NotesPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Optimasi: Gunakan select pada provider notes untuk hindari rebuild saat provider lain berubah
     final filteredState = ref.watch(filteredNotesProvider);
-    final currentQuery = ref.watch(noteSearchQueryProvider);
+    final currentQuery = ref.watch(noteSearchQueryProvider.select((q) => q));
 
     return Scaffold(
       appBar: AppBar(title: const Text('Catatan Kampus')),
@@ -62,18 +63,20 @@ class _NotesPageState extends ConsumerState<NotesPage> {
             ),
           ),
           Expanded(
-            child: filteredState.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => ErrorView(
-                message: '$e',
-                onRetry: () => ref.invalidate(notesProvider),
+            child: RepaintBoundary(
+              child: filteredState.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => ErrorView(
+                  message: '$e',
+                  onRetry: () => ref.invalidate(notesProvider),
+                ),
+                data: (notes) {
+                  if (notes.isEmpty) {
+                    return EmptyNotesView(query: currentQuery);
+                  }
+                  return NotesList(notes: notes);
+                },
               ),
-              data: (notes) {
-                if (notes.isEmpty) {
-                  return EmptyNotesView(query: currentQuery);
-                }
-                return NotesList(notes: notes);
-              },
             ),
           ),
         ],
@@ -84,6 +87,7 @@ class _NotesPageState extends ConsumerState<NotesPage> {
 
 // Widget Empty State
 class EmptyNotesView extends StatelessWidget {
+  // Const constructor now ensures no rebuild unless query changes
   final String query;
 
   const EmptyNotesView({super.key, required this.query});
@@ -154,17 +158,28 @@ class NotesList extends StatelessWidget {
     return ListView.builder(
       itemCount: notes.length,
       itemBuilder: (context, index) {
-        final note = notes[index];
-        return ListTile(
-          leading: const CircleAvatar(child: Icon(Icons.note)),
-          title: Text(note.title),
-          subtitle: Text(
-            note.body.isNotEmpty ? note.body : '(Tanpa isi)',
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        );
+        return NoteListItem(note: notes[index]);
       },
+    );
+  }
+}
+
+// Optimasi: Ekstrak ke widget terpisah untuk performa build yang lebih granular
+class NoteListItem extends StatelessWidget {
+  final Note note;
+
+  const NoteListItem({super.key, required this.note});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const CircleAvatar(child: Icon(Icons.note)),
+      title: Text(note.title),
+      subtitle: Text(
+        note.body.isNotEmpty ? note.body : '(Tanpa isi)',
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }

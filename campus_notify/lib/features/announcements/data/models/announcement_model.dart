@@ -18,7 +18,8 @@ class AnnouncementModel {
       id: json['id']?.toString() ?? '',
       title: json['title'] as String? ?? '',
       content: json['content'] as String? ?? '',
-      publishedAt: DateTime.tryParse(json['published_at'] ?? '') ?? DateTime.now(),
+      publishedAt:
+          DateTime.tryParse(json['published_at'] ?? '') ?? DateTime.now(),
     );
   }
 

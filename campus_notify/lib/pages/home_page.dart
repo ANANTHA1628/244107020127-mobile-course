@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import '../providers/auth_provider.dart';
 
 class HomePage extends ConsumerWidget {
@@ -40,6 +41,12 @@ class HomePage extends ConsumerWidget {
             ElevatedButton(
               onPressed: () => context.push('/notes'),
               child: const Text('Buka Catatan (Notes)'),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.smart_toy_outlined),
+              onPressed: () => context.push('/chat'),
+              label: const Text('Tanya AI Campus Assistant'),
             ),
           ],
         ),
